@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/config.css' %}">
+{% endblock %}
+
+{% block title %}Settings{% endblock %}
+
+{% block page_title %}Settings{% endblock %}
+
+{% block content %}
+<div class="container-sm">
+
+    <!-- Inventory Related Section -->
+    <div class="section-header">
+        <div class="section-title">Inventory</div>
+    </div>
+
+    <div class="settings-card">
+        <div class="settings-row">
+            <div>
+                <div>Units</div>
+                <div class="settings-row-desc">Measurement units used across inventory and recipes.</div>
+            </div>
+            <a href="{% url 'configuration:unit' %}" class="btn btn-secondary btn-sm">Manage</a>
+        </div>
+    </div>
+
+    <div class="settings-card">
+        <div class="settings-row">
+            <div>
+                <div>Category</div>
+                <div class="settings-row-desc">Category of ingredients across ingredient.</div>
+            </div>
+            <a class="btn btn-secondary btn-sm">Manage</a>
+        </div>
+    </div>
+
+
+</div>
+{% endblock %}
