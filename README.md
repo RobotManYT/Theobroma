@@ -16,7 +16,7 @@ There are several ways you can contribute to the project:
 
 1. **Found a bug?** Please open an issue.
 2. **Want to add code?** Please fork the project and open a pull request.
-3. **Have a feature idea not in [Next in line](#next-in-line)?** Feel free to open an issue.
+3. **Have a feature idea not in [Next in line](#next-in-line)?** Feel free to a discussion in [Ideas](https://github.com/RobotManYT/Theobroma/discussions/categories/ideas).
 
 ## Run / Build
 
