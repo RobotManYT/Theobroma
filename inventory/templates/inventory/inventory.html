@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Inventory by item{% endblock %}
+
+{% block page_title %}Inventory by item{% endblock %}
+
+{% block content %}
+<div class="section-header" style="margin-bottom: 18px;">
+  <!-- <div class="section-title">Inventory details</div> -->
+  <a href="{% url 'inventory:create' %}" class="btn btn-primary">Create new item</a>
+</div>
+
+<div class="table-card" style="width: 100%;">
+  <table class="data-table" style="width: 100%;">
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Stock</th>
+        <th>Stock value</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in inventory_items %}
+      <tr>
+        <td>
+          <div>{{ item.name|default:"Unknown item" }}</div>
+          {% if item.category %}
+          <div class="text-muted" style="font-size: 13px; margin-top: 4px;">{{ item.category }}</div>
+          {% endif %}
+        </td>
+        <td>{{ item.stock|default:"0" }} {{ item.unit|default:"u." }}</td>
+        <td>
+          {% if item.stock_value is not None %}
+            {{ item.stock_value }} {{ item.currency|default:"$" }}
+          {% elif item.unit_price is not None and item.stock is not None %}
+            {{ item.unit_price|floatformat:2 }} × {{ item.stock|default:"0" }}
+          {% else %}
+            —
+          {% endif %}
+        </td>
+        <td>
+          {% if item.stock is not None %}
+            {% if item.stock|default:"0"|floatformat:0 == "0" %}
+              <span class="badge badge-danger">Out of stock</span>
+            {% else %}
+              <span class="badge badge-ok">Available</span>
+            {% endif %}
+          {% else %}
+            <span class="badge badge-neutral">N/A</span>
+          {% endif %}
+        </td>
+        <td>
+          <div class="flex gap-8">
+            <a class="btn btn-secondary btn-sm">Add stock</a>
+            <a class="btn btn-secondary btn-sm">Remove stock</a>
+            <button
+              hx-confirm="Delete {{ item.name }} ?"
+              hx-target="closest tr"
+              hx-swap="outerHTML swap:1s"
+              class="btn btn-danger btn-sm"
+            >Delete</button>
+          </div>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="6" class="text-muted" style="text-align: center; padding: 32px 0;">No item available at the moment.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

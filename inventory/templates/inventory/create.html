@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+
+{% block title %}Create Item{% endblock %}
+
+{% block topbar_left %}
+  <div class="breadcrumb">
+    <a>Ingrédients</a>
+    <span class="breadcrumb-sep">›</span>
+    <span class="breadcrumb-current">Create Item</span>
+  </div>
+{% endblock %}
+
+{% block content %}
+
+<div style="max-width: 760px;">
+
+  {% if error %}
+    <p class="alert alert-error">{{ error }}</p>
+  {% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+
+    <!-- Informations de base -->
+    <div class="form-card">
+      <div class="form-card-title">Basic Information</div>
+      <div class="form-grid">
+
+        <div class="form-group full">
+          <label class="form-label" for="id_name">Item name *</label>
+          <input
+            type="text"
+            id="id_name"
+            name="name"
+            class="form-control"
+            placeholder="Ex: Cocoa Bean, Cocoa Butter, etc."
+            value="{{ oldValue.name }}"
+            required
+            autofocus>
+          {% if form.name.errors %}
+            <span style="font-size: 11px; color: #A32D2D;">{{ form.name.errors.0 }}</span>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="id_category">Category *</label>
+          <select id="id_category" name="category" class="form-control" required>
+            <option value="" disabled selected hidden>Select...</option>
+            {% for cat in category_list %}
+              <option value="{{ cat.id }}"
+                      {% if oldValue.category == cat.id|stringformat:"s" %}
+                        selected
+                      {% endif %}>{{ cat.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="id_supplier">Supplier</label>
+          <input
+            type="text"
+            id="id_supplier"
+            name="supplier"
+            class="form-control"
+            placeholder="Ex: MABCO, Chocolate Alchemy, etc."
+            value="{{ oldValue.supplier }}">
+        </div>
+
+        <div class="form-group full">
+          <label class="form-label" for="id_description">Description</label>
+          <textarea
+            id="id_description"
+            name="description"
+            class="form-control"
+            placeholder="Description of the item"
+            rows="3">{{ oldValue.description }}</textarea>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Stock & unités -->
+    <div class="form-card">
+      <div class="form-card-title">Unit & Stock</div>
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label class="form-label" for="id_utype">Unit Type *</label>
+          <select id="id_utype" name="utype" class="form-control" required>
+            <option value="" disabled selected hidden>Select...</option>
+            {% for type in utype_list %}
+              <option value="{{type.id}}"
+                      {% if oldValue.utype == type.id|stringformat:"s" %}
+                        selected
+                      {% endif %}>{{ type.name }}</option>
+            {% endfor %}
+          </select>
+          <span class="form-hint">Affect option of default unit</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="id_unit">Default Unit *</label>
+          <select id="id_unit" name="unit" class="form-control" disabled required>
+            <option value="" disabled selected hidden>Select...</option>
+            {% for unit in unit_list %}
+              <option value="{{ unit.id }}" 
+                      data-utype="{{ unit.type }}"
+                      {% if oldValue.unit == unit.id|stringformat:"s" %}
+                        selected
+                      {% endif %}>{{ unit.name }} ({{ unit.symbol }})</option>
+            {% endfor %}
+          </select>
+          <span class="form-hint">Unit used for inventory tracking</span>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" for="id_stock">Current stock</label>
+          <input
+            type="number"
+            id="id_stock"
+            name="stock"
+            class="form-control"
+            placeholder="0.000"
+            step="0.01"
+            min="0"
+            value="{{ oldValue.stock }}">
+          <span class="form-hint">Current quantity available</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="id_sunit">Stock entry unit</label>
+          <select id="id_sunit" name="stock_entry_unit" class="form-control" disabled>
+            <option value="" disabled selected hidden>Select...</option>
+            {% for unit in unit_list %}
+              <option value="{{ unit.id }}" 
+                      data-utype="{{ unit.type }}"
+                      {% if oldValue.stock_entry_unit == unit.id|stringformat:"s" %}
+                        selected
+                      {% endif %}>{{ unit.symbol }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="form-actions" style="border: none; padding-top: 0;">
+      <a class="btn btn-secondary">
+        Cancel
+      </a>
+      <button type="submit" class="btn btn-primary">Create</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  const typeSelect = document.getElementById("id_utype");
+  const unitSelect = document.getElementById("id_unit");
+  const stockUnitSelect = document.getElementById("id_sunit");
+
+  function updateAvailableUnits(event) {
+    const selectedType = typeSelect.value;
+
+    if(selectedType) {
+      unitSelect.disabled = false;
+      stockUnitSelect.disabled = false;
+    }
+
+    Array.from(unitSelect.options).forEach(option => {
+        option.hidden = option.dataset.utype !== selectedType;
+    });
+    
+    Array.from(stockUnitSelect.options).forEach(option => {
+      option.hidden = option.dataset.utype !== selectedType;
+    });
+
+    if(event.type === "change") {
+      unitSelect.selectedIndex = 0;
+      stockUnitSelect.selectedIndex = 0;
+    }
+  }
+
+  typeSelect.addEventListener("change", updateAvailableUnits);
+  document.addEventListener("DOMContentLoaded", updateAvailableUnits);
+
+
+
+  const quantity = document.getElementById("id_stock");
+  const unit = document.getElementById("id_sunit");
+
+  quantity.addEventListener("input", () => {
+
+      if (parseInt(quantity.value) > 0) {
+          unit.required = true;
+      } else {
+          unit.required = false;
+      }
+
+  });
+</script>
+
+{% endblock %}
