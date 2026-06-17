@@ -1,0 +1,32 @@
+<div class="table-card">
+    <table class="data-table">
+        <thead>
+            <tr>
+                {% for header in headers %}
+                <th>{{ header }}</th>
+                {% endfor %}
+                <th>Edit</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in rows %}
+            <tr>
+                {% for cell in row %}
+                <td>{{ cell }}</td>
+                {% endfor %}
+
+                <td>
+                    <div class="flex gap-8">
+                        <a class="btn btn-secondary btn-sm">Modifier</a>
+                        <button 
+                        hx-target="closest tr"
+                        hx-swap="outerHTML"
+                        class="btn btn-danger btn-sm"
+                        >Suppr.</button>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

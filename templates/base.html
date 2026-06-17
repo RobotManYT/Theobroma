@@ -1,0 +1,189 @@
+{% load i18n %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Chocolaterie{% endblock %} — Inventaire</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  <link rel="stylesheet" href="{% static 'css/form.css' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+<div class="layout">
+
+    <!-- ── Sidebar ── -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="brand-name">{% translate "Theobroma" %}</div>
+            <div class="brand-sub">{% translate "Artisanale Chocolaterie" %}</div>
+        </div>
+
+        <nav class="nav">
+            <!-- Section Principal -->
+            <div class="nav-section-label">{% translate "Principal" %}</div>
+
+            <a href="{% url 'dashboard:main' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                <svg class="sidebar-icon"><use href="#icon-dashboard"/></svg>
+                {% translate "Dashboard" %}
+            </a>
+
+            <a href="{% url 'inventory:main' %}" class="nav-link {% if request.resolver_match.app_name == 'inventory' %}active{% endif %}">
+                <svg class="sidebar-icon"><use href="#icon-inventory"/></svg>
+                {% translate "Inventory" %}
+                <!-- <svg class="submenu-arrow"><use href="#menu-arrow"/></svg> --> <!-- Uncomment to add arrow-->
+            </a>
+
+            <!-- Uncomment div if you want to add "submenu" -->
+            <!-- <div id="sub-ingredients" class="submenu {% if 'inventory' == request.resolver_match.app_name %}open{% endif %}">
+                <a class="submenu-link {% if request.resolver_match.url_name == 'list' and 'inventory' in request.resolver_match.app_name %}active{% endif %}">Tous les ingrédients</a>
+                <a class="submenu-link {% if request.resolver_match.url_name == 'category' and 'ingredients' in request.resolver_match.app_name %}active{% endif %}">Catégories</a>
+                <a class="submenu-link {% if request.resolver_match.url_name == 'suplier' and 'ingredients' in request.resolver_match.app_name %}active{% endif %}">Fournisseurs</a>
+                <a class="submenu-link {% if request.resolver_match.url_name == 'create' and 'ingredients' in request.resolver_match.app_name %}active{% endif %}">+ Ajouter</a>
+            </div> -->
+
+            <a class="nav-link {% if 'recettes' in request.resolver_match.app_name %}active{% endif %}">
+                <svg class="sidebar-icon"><use href="#icon-Recipes"/></svg>
+                {% translate "Recipes" %}
+            </a>
+
+            <!-- Section Opérations -->
+            <div class="nav-section-label">{% translate "operations" %}</div>
+
+            <a class="nav-link {% if 'commandes' in request.resolver_match.app_name %}active{% endif %}">
+                <svg class="sidebar-icon"><use href="#icon-orders"/></svg>
+                {% translate "Orders" %}
+            </a>
+
+            <a class="nav-link {% if 'production' in request.resolver_match.app_name %}active{% endif %}">
+                <svg class="sidebar-icon"><use href="#icon-production"/></svg>
+                {% translate "production" %}
+            </a>
+
+            <!-- Section Settings -->
+            <div class="nav-section-label">{% translate "Settings" %}</div>
+
+            <a href="{% url 'configuration:main' %}" class="nav-link {% if request.resolver_match.url_name == 'parametres' %}active{% endif %}">
+                <svg class="sidebar-icon"><use href="#icon-settings"/></svg>
+                {% translate "Settings" %}
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="sidebar-footer-user">
+                <div class="avatar">{{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}</div>
+                <div>
+                    <div class="footer-name">{{ request.user.get_full_name|default:request.user.username }}</div>
+                    <div class="footer-role">Administrateur</div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ── Main ── -->
+    <div class="main">
+        <header class="topbar">
+        <div class="topbar-left">
+            {% block topbar_left %}
+            <h1 class="page-title-bar">{% block page_title %}{% translate "Dashboard (Page title)" %}{% endblock %}</h1>
+            {% endblock %}
+        </div>
+        <div class="topbar-right">
+            {% block topbar_right %}{% endblock %}
+        </div>
+        </header>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="banner banner-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <main class="page-content">
+        {% block content %}
+        {% endblock %}
+        </main>
+    </div>
+
+    </div>
+    {% block extra_js %}{% endblock %}
+
+    <script>
+        function toggleSubmenu(id, parentLink) {
+            const sub = document.getElementById(id);
+            const isOpen = sub.classList.contains('open');
+
+            // Fermer tous les autres sous-menus (optionnel)
+            document.querySelectorAll('.submenu.open').forEach(el => {
+                if (el.id !== id) {
+                    el.classList.remove('open');
+                    el.previousElementSibling?.classList.remove('open');
+                }
+            });
+
+            sub.classList.toggle('open', !isOpen);
+            parentLink.classList.toggle('open', !isOpen);
+        }
+
+        // Garder ouvert au chargement si on est dans la section
+        document.querySelectorAll('.submenu.open').forEach(sub => {
+            sub.previousElementSibling?.classList.add('open');
+        });
+    </script>
+
+    <svg>
+        <symbol id="icon-dashboard" viewBox="0 0 16 16" fill="none">
+            <rect x="2" y="2" width="5" height="5" rx="1" fill="currentColor" opacity="0.9"/>
+            <rect x="9" y="2" width="5" height="5" rx="1" fill="currentColor" opacity="0.9"/>
+            <rect x="2" y="9" width="5" height="5" rx="1" fill="currentColor" opacity="0.5"/>
+            <rect x="9" y="9" width="5" height="5" rx="1" fill="currentColor" opacity="0.5"/>
+        </symbol>
+
+        <symbol id="menu-arrow" viewBos="0 0 16 16" fill="none">
+            <path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </symbol>
+
+        <symbol id="icon-inventory" viewBox="0 0 16 16">
+            <rect x="3" y="3" width="2" height="2" fill="currentColor"/>
+            <rect x="6" y="3" width="7" height="1.5" fill="currentColor"/>
+
+            <rect x="3" y="7" width="2" height="2" fill="currentColor"/>
+            <rect x="6" y="7" width="7" height="1.5" fill="currentColor"/>
+
+            <rect x="3" y="11" width="2" height="2" fill="currentColor"/>
+            <rect x="6" y="11" width="7" height="1.5" fill="currentColor"/>
+        </symbol>
+
+        <symbol id="icon-Recipes" viewBox="0 0 16 16" fill="none">
+            <path d="M4 2h8a1 1 0 011 1v10a1 1 0 01-1 1H4a1 1 0 01-1-1V3a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3"/>
+            <path d="M6 6h4M6 9h4M6 12h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        </symbol>
+
+        <symbol id="icon-orders" viewBox="0 0 16 16" fill="none">
+            <path d="M2 3h12l-1.5 8H3.5L2 3z" stroke="currentColor" stroke-width="1.3"/>
+            <circle cx="6" cy="14" r="1" fill="currentColor" opacity="0.7"/>
+            <circle cx="11" cy="14" r="1" fill="currentColor" opacity="0.7"/>
+        </symbol>
+
+        <symbol id="icon-production" viewBox="0 0 16 16" fill="none">
+            <circle cx="8" cy="8" r="5" stroke="currentColor" stroke-width="1.3"/>
+            <path d="M8 5v3l2 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        </symbol>
+
+        <symbol id="icon-settings" viewBox="0 0 16 16" fill="none">
+            <circle cx="8" cy="8" r="2.2" stroke="currentColor" stroke-width="1.3"/>
+            <path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M12.6 3.4l-1.4 1.4M4.8 11.2l-1.4 1.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        </symbol>
+    </svg>
+</body>
+</html>
