@@ -63,3 +63,61 @@ In no particular order, here is a non-exhaustive list of what's planned.
 | Customize the interface | Set your boutique's name and more |
 | Improve copy | Some text can feel a bit childish; a more professional style would be great |
 | Expense and income tracking | Being able to evaluate the cost of a batch and show a price of sell for future order |
+
+
+## Development Documentation
+
+### Banner
+
+Banner is available on every page.
+
+The banner is a temporary message being display at the top for 3sec. It is meant to be a simple short message to rapidly indicate an information (Success, warning or even error). The message should not be of an interest for later use, example "Missing x argument in form". For one of this case please refer to [Alert](#alert), which act similary without disappearing after 3sec.
+
+To generate a banner you can use the ``messages`` class that offer multiple functions usefull in that scenario.
+
+```python
+# Error
+messages.error(request, "An error occured")
+
+# Warning
+messages.warning(request, "Warning messages")
+
+# Success
+messages.success(request, "Success messages")
+```
+
+\
+Here is the supported *function*:
+| Function | Example |
+|:--------:|---------|
+| error    | ![banner-error.gif](/resources/banner-error.gif) | 
+| warning  | ![banner-warning.gif](/resources/banner-warning.gif) |
+| success  | ![banner-success.gif](/resources/banner-success.gif) |
+| Others   | ![banner-unknown.gif](/resources/banner-unknown.gif) Please note that other function are not supported yet! |
+
+It is possible to have multiple banner, but more than one can already be annoying, so do not abuse.
+
+
+### Alert
+
+Alert is available on every page.
+
+An alert is very similar to a banner, execept that it doesn't disappear by itself. The message has an objective to remind the user of what happen like what did he do wrong. To display such an element you should render a page with this variable:
+
+```python
+return render(request, "inventory/create.html", {
+    "alert": {"type": "error", 
+              "msg":  "Item name already exist. Please use a different name."}
+})
+```
+
+The available alert type are define as follow:
+
+| Type    | Example |
+|:-------:|:--------|
+| error   | ![alert-error.png](/resources/alert-error.png) |
+| warning | ![alert-warning.png](/resources/alert-warning.png) |
+| success | ![alert-success.png](/resources/alert-success.png) |
+| Others  | Any other type should not make the UI crash, but it is ugly without no style... |
+
+There is only one alert that is allow at a time, if needed in the future support for multiple could be added.
