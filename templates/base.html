@@ -5,7 +5,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}Chocolaterie{% endblock %} — Inventaire</title>
+  <title>{% block title %}Theobroma{% endblock %} - {% block section %}Bean-to-Bar Inventory{% endblock %}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
@@ -110,8 +110,12 @@
         {% endif %}
 
         <main class="page-content">
-        {% block content %}
-        {% endblock %}
+            {% if alert %}
+                <p class="alert alert-{{ alert.type }}">{{ alert.msg }}</p>
+            {% endif %}
+
+            {% block content %}
+            {% endblock %}
         </main>
     </div>
 

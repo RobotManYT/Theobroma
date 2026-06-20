@@ -1,23 +1,19 @@
 {% extends "base.html" %}
 
-{% block title %}Create Item{% endblock %}
+{% block section %}Create Item{% endblock %}
 
 {% block topbar_left %}
   <div class="breadcrumb">
-    <a>Ingrédients</a>
+    <a href="{% url 'inventory:main' %}">Ingrédients</a>
     <span class="breadcrumb-sep">›</span>
     <span class="breadcrumb-current">Create Item</span>
   </div>
 {% endblock %}
 
+
 {% block content %}
 
 <div style="max-width: 760px;">
-
-  {% if error %}
-    <p class="alert alert-error">{{ error }}</p>
-  {% endif %}
-
   <form method="post">
     {% csrf_token %}
 

@@ -561,7 +561,7 @@ html, body {
     gap: 8px;
 }
 
-.alert-warn {
+.alert-warning {
     background: #FAEEDA;
     color: #854F0B;
     border-left: 3px solid #EF9F27;
@@ -573,7 +573,7 @@ html, body {
     border-left: 3px solid #E24B4A;
 }
 
-.alert-ok {
+.alert-success {
     background: #EAF3DE;
     color: #3B6D11;
     border-left: 3px solid #639922;
@@ -597,16 +597,16 @@ html, body {
     animation: fadeOut 2s 3s forwards;
 }
 
-.banner-warning {
-    background: #FAEEDA;
-    color: #854F0B;
-    /* border-left: 3px solid #EF9F27; */
-}
-
 .banner-error {
     background: #FCEBEB;
     color: #A32D2D;
     /* border-left: 3px solid #E24B4A; */
+}
+
+.banner-warning {
+    background: #FAEEDA;
+    color: #854F0B;
+    /* border-left: 3px solid #EF9F27; */
 }
 
 .banner-success {
