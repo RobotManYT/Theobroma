@@ -42,3 +42,5 @@ def unitCreation(request):
         "type_list": type_list,
     })
 
+def categoryConfig(request):
+    return render(request, "category/category.html")

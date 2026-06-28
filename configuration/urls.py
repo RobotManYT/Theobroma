@@ -7,4 +7,5 @@ urlpatterns = [
     path("", views.configMain, name="main"),
     path("unit/", views.unitConfig, name="unit"),
     path("unit/creation", views.unitCreation, name="unit_create"),
+    path("category/", views.categoryConfig, name="category"),
 ]
