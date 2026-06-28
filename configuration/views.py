@@ -23,9 +23,22 @@ def unitConfig(request):
                                               "rows": rows})
 
 def unitCreation(request):
+    if request.method == "POST":
+        print(request.POST)
+        # name
+        # symbol
+        # utype
+        # new_unit = models.Unit.objects.create(unit_name=name,
+        #                                       unit_name)
+
+    utypes = models.UnitType.objects.all()
+
+    type_list = []
+
+    for utype in utypes:
+        type_list.append({'id': utype.id, 'name': utype.name})
+
     return render(request, "unit/form.html", {
-        "type_list": [{'id': '1', 'name': 'Mass'},
-                       {'id': '2', 'name': 'Volume'},
-                       {'id': '3', 'name': 'Other'}],
+        "type_list": type_list,
     })
 
