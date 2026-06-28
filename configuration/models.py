@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 class UnitType(models.Model):
-    name = models.CharField(max_length=50)  # Mass, Volume, Custom, etc.
+    name = models.CharField(max_length=15)  # Mass, Volume, Custom, etc.
 
 class Unit(models.Model):
     unit_name = models.CharField(max_length=50)
