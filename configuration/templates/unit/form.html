@@ -10,7 +10,7 @@
             <div class="form-card-title">New Unit Creation</div>
             <div class="form-grid">
                 <div class="form-group">
-                    <label class="form-label" for="uname">Unit name</label>
+                    <label class="form-label" for="uname">Unit name *</label>
                     <input type="text" id="uname" name="name" class="form-control" placeholder="e.g.: Grams, Liter, etc." required autofocus>
                     {% if form.name.errors %}
                         <span style="font-size: 11px; color: #A32D2D;">{{ form.name.errors.0 }}</span>
@@ -18,7 +18,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="usymbol">Unit symbol</label>
+                    <label class="form-label" for="usymbol">Unit symbol *</label>
                     <input type="text" id="usymbol" name="symbol" class="form-control" placeholder="e.g.: g, Kg, L, etc." required autofocus>
                     {% if form.symbol.errors %}
                         <span style="font-size: 11px; color: #A32D2D;">{{ form.symbol.errors.0 }}</span>
@@ -26,7 +26,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="utype">Unit type</label>
+                    <label class="form-label" for="utype">Unit type *</label>
                     <select id="utype" name="utype" class="form-control" required>
                         <option value="" disabled selected hidden>Select...</option>
                         {% for utype in type_list %}
@@ -37,7 +37,33 @@
                         {% endfor %}
                     </select>
                 </div>
+
+                <div class="form-group">
+
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="is_base_select">Base Unit</label>
+                    <select id="is_base_select" name="isbase" class="form-control" required>
+                        <option value="" disabled selected hidden>Select...</option>
+                        <option value="true"
+                            {% if oldValue.isbase == "true" %}
+                                selected
+                            {% endif %}>Is a base unit</option>
+                        <option value="false"
+                            {% if oldValue.isbase == "false" %}
+                                selected
+                            {% endif %}>Is not a base unit</option>
+                    </select>
+                </div>
             </div>
+        </div>
+
+        <div class="form-actions" style="border: none; padding-top: 0;">
+            <a class="btn btn-secondary">
+                Cancel
+            </a>
+            <button type="submit" class="btn btn-primary">Create</button>
         </div>
     </form>
 </div>
