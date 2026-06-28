@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="{% static 'css/config.css' %}">
 {% endblock %}
 
-{% block title %}Settings{% endblock %}
+{% block section %}Settings{% endblock %}
 
 {% block page_title %}Settings{% endblock %}
 
@@ -33,7 +33,7 @@
                 <div>Category</div>
                 <div class="settings-row-desc">Category of ingredients across ingredient.</div>
             </div>
-            <a class="btn btn-secondary btn-sm">Manage</a>
+            <a href="{% url 'configuration:category' %}" class="btn btn-secondary btn-sm">Manage</a>
         </div>
     </div>
 
