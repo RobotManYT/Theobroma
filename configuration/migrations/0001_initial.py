@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
             name='Unit',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('unit_name', models.CharField(max_length=50)),
+                ('name', models.CharField(max_length=50)),
                 ('symbol', models.CharField(max_length=4)),
                 ('ratio_to_base', models.FloatField(default=1)),
                 ('base_unit', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.RESTRICT, to='configuration.unit')),

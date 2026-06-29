@@ -5,7 +5,7 @@ class UnitType(models.Model):
     name = models.CharField(max_length=15)  # Mass, Volume, Custom, etc.
 
 class Unit(models.Model):
-    unit_name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50)
     symbol = models.CharField(max_length=4)
 
     unit_type = models.ForeignKey(UnitType, on_delete=models.RESTRICT)
