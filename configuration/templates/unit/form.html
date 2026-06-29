@@ -37,24 +37,37 @@
                         {% endfor %}
                     </select>
                 </div>
+            </div>
+        </div>
 
+        <div class="form-card">
+            <div class="form-card-title">Convertion</div>
+            <div class="form-grid">
                 <div class="form-group">
-
+                    <label class="form-label" for="id_refUnit">Unit of reference</label>
+                    <select id="id_refUnit" name="unit" class="form-control">
+                        <option value="" selected>None</option>
+                        {% for unit in unit_list %}
+                            <option id="id_refUnit_{{ unit.id }}" value="{{ unit.id }}" data-name="{{ unit.name }}" data-symbol="{{ unit.symbol }}"
+                                {% if oldValue.unit == unit.id|stringformat:"s" %}
+                                    selected
+                                {% endif %}>{{ unit.name }} ({{ unit.symbol }})</option>
+                        {% endfor %}
+                    </select>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="is_base_select">Base Unit</label>
-                    <select id="is_base_select" name="isbase" class="form-control" required>
-                        <option value="" disabled selected hidden>Select...</option>
-                        <option value="true"
-                            {% if oldValue.isbase == "true" %}
-                                selected
-                            {% endif %}>Is a base unit</option>
-                        <option value="false"
-                            {% if oldValue.isbase == "false" %}
-                                selected
-                            {% endif %}>Is not a base unit</option>
-                    </select>
+                    <label class="form-label" for="id_ratio">Ratio</label>
+                    <input
+                        type="number"
+                        id="id_ratio"
+                        name="ratio"
+                        class="form-control"
+                        placeholder="1.000"
+                        step="1.000"
+                        min="0.001"
+                        value="{{ oldValue.ratio }}">
+                    <span class="form-hint" id="id_txthelp_refunit">1 ref x ratio = 1 unit</span>
                 </div>
             </div>
         </div>
@@ -67,5 +80,41 @@
         </div>
     </form>
 </div>
+
+<script>
+    const new_unit_symb = document.getElementById("usymbol");
+    const ref_unit = document.getElementById("id_refUnit");
+    const ratio = document.getElementById("id_ratio");
+    const txt_ref_unit = document.getElementById("id_txthelp_refunit");
+
+    const ref_unit_data = ref_unit.options[ref_unit.selectedIndex];
+
+
+    function txtHelperConvertGen() {
+        if(ref_unit.value && ref_unit.value !== "None"){
+            let ref_unit_option = document.getElementById(`id_refUnit_${ref_unit.value}`);
+            let ratio_val = ratio.value || 1
+
+            ratio.disabled = false;
+            return `1 ${ref_unit_option.dataset.symbol} x ${ratio_val} = 1 ${new_unit_symb.value}`;
+        }
+        else{
+            ratio.disabled = true;
+            ratio.value = "";
+            return 'Your unit is one of a kind';
+        }
+    }
+
+    function updateConvertSpan() {
+        txt_ref_unit.textContent = txtHelperConvertGen();
+    }
+
+
+    ref_unit.addEventListener("input", updateConvertSpan);
+    ratio.addEventListener("input", updateConvertSpan);
+    new_unit_symb.addEventListener("input", updateConvertSpan);
+
+    updateConvertSpan();
+</script>
 
 {% endblock %}
