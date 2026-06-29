@@ -32,14 +32,20 @@ def unitCreation(request):
         #                                       unit_name)
 
     utypes = models.UnitType.objects.all()
+    units  = models.Unit.objects.all()
 
     type_list = []
+    unit_list = []
 
     for utype in utypes:
         type_list.append({'id': utype.id, 'name': utype.name})
 
+    for unit in units:
+        unit_list.append({'id': unit.id, 'name': unit.name, 'symbol': unit.symbol})
+
     return render(request, "unit/form.html", {
         "type_list": type_list,
+        "unit_list": unit_list,
     })
 
 def categoryConfig(request):
