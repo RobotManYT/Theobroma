@@ -72,8 +72,11 @@
             </div>
         </div>
 
+        <input type="hidden" name="req_path" value="{{ request.path }}">
+
         <div class="form-actions" style="border: none; padding-top: 0;">
-            <a class="btn btn-secondary">
+            <a href="{{ redirect_url }}" class="btn btn-secondary" 
+               onclick="return confirm('Are you sure you want to disregard entered values?')">
                 Cancel
             </a>
             <button type="submit" class="btn btn-primary">Create</button>
@@ -108,7 +111,6 @@
     function updateConvertSpan() {
         txt_ref_unit.textContent = txtHelperConvertGen();
     }
-
 
     ref_unit.addEventListener("input", updateConvertSpan);
     ratio.addEventListener("input", updateConvertSpan);

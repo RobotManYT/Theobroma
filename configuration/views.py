@@ -15,7 +15,7 @@ def unitConfig(request):
     for unit in units:
         ratio = int(unit.ratio_to_base) if unit.ratio_to_base.is_integer() else unit.ratio_to_base
         ratio_str = f"{ratio} {unit.base_unit.symbol}" if unit.base_unit != None else "Base unit"
-        rows.append([unit.unit_name, unit.symbol, ratio_str, unit.unit_type.name])
+        rows.append([unit.name, unit.symbol, ratio_str, unit.unit_type.name])
 
     print("Rows generated:", rows)
 
@@ -46,6 +46,7 @@ def unitCreation(request):
     return render(request, "unit/form.html", {
         "type_list": type_list,
         "unit_list": unit_list,
+        "redirect_url": request.META.get("HTTP_REFERER"),
     })
 
 def categoryConfig(request):
