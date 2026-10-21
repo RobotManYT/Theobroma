@@ -50,7 +50,7 @@ def create(request):
         # return redirect("inventory:create")
 
 
-    messages.error(request, "Item created successfully") # Display a temporary banner
+    # messages.error(request, "Item created successfully") # Display a temporary banner
     return render(request, "inventory/create.html", {
         "category_list": [{'id': 1, 'name': 'Cocoa'}, 
                           {'id': 2, 'name': 'Dairy Products'}, 
@@ -68,5 +68,5 @@ def create(request):
 
         "oldValue": request.POST,
 
-        "error": "lol", # Display a message at the top of the page with the message
+        # "error": "lol", # Display a message at the top of the page with the message
     })

@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from . import models
+from django.core.exceptions import ValidationError
 
 # Create your views here.
 def configMain(request):
@@ -23,13 +24,47 @@ def unitConfig(request):
                                               "rows": rows})
 
 def unitCreation(request):
-    if request.method == "POST":
-        print(request.POST)
-        # name
-        # symbol
-        # utype
-        # new_unit = models.Unit.objects.create(unit_name=name,
-        #                                       unit_name)
+    genForm = True
+    oldValue = None
+
+    try:
+        if request.method == "POST":
+            genForm = False
+            # print(request.POST)
+
+            unit_creation = models.Unit()
+            
+            unit_creation.name = request.POST.get("name")
+            unit_creation.symbol = request.POST.get("symbol")
+            unit_creation.unit_type_id = request.POST.get("utype")
+            unit_creation.base_unit_id = request.POST.get("unit") if request.POST.get("unit") != "" else None
+            unit_creation.ratio_to_base = float(request.POST.get("ratio"))
+
+            # Custom validation
+            if unit_creation.base_unit == None or unit_creation.base_unit == "":
+                unit_creation.base_unit = None
+                unit_creation.ratio_to_base = 1
+            else:
+                if unit_creation.ratio_to_base <= 0:
+                    print(f"Invalid form - ratio_to_base of 0 or under is a bit confusing, please retry")
+                    raise ValueError
+
+            # Django full validation
+            try:
+                unit_creation.full_clean()
+            except ValueError:
+                # Failure - Invalid form
+                print("Invalid form - Please retry")
+                raise ValueError
+
+            print(f"Saving...")
+            print(unit_creation)
+
+            unit_creation.save()
+    except ValueError:
+        oldValue = request.POST
+        
+
 
     utypes = models.UnitType.objects.all()
     units  = models.Unit.objects.all()
@@ -46,6 +81,7 @@ def unitCreation(request):
     return render(request, "unit/form.html", {
         "type_list": type_list,
         "unit_list": unit_list,
+        "oldValue": oldValue,
         "redirect_url": request.META.get("HTTP_REFERER"),
     })
 

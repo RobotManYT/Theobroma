@@ -13,3 +13,6 @@ class Unit(models.Model):
     base_unit = models.ForeignKey("self", null=True, blank=True, on_delete=models.RESTRICT)
 
     ratio_to_base = models.FloatField(default=1)
+
+    def __str__(self):
+        return f"Unit creation - NAME: {self.name}; SYMBOL: {self.symbol}; UNIT_TYPE: {self.unit_type}; BASE_UNIT: {self.base_unit}; RATIO_TO_BASE: {self.ratio_to_base}"
