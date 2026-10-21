@@ -1,7 +1,18 @@
 {
     "configurations": [
         {
-            "name": "Python Debugger: Django",
+            "name": "Python Debugger: Linux",
+            "type": "debugpy",
+            "request": "launch",
+            "args": [
+                "runserver"
+            ],
+            "django": true,
+            "autoStartBrowser": false,
+            "program": "${workspaceFolder}/manage.py"
+        },
+        {
+            "name": "Python Debugger: Windows",
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}\\manage.py",
