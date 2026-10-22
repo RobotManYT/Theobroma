@@ -11,7 +11,14 @@
             <div class="form-grid">
                 <div class="form-group">
                     <label class="form-label" for="uname">Unit name *</label>
-                    <input type="text" id="uname" name="name" class="form-control" placeholder="e.g.: Grams, Liter, etc." required autofocus>
+                    <input type="text" 
+                           id="uname" 
+                           name="name" 
+                           class="form-control" 
+                           placeholder="e.g.: Grams, Liter, etc." 
+                           value="{{ oldValue.name }}"
+                           required 
+                           autofocus>
                     {% if form.name.errors %}
                         <span style="font-size: 11px; color: #A32D2D;">{{ form.name.errors.0 }}</span>
                     {% endif %}
@@ -19,7 +26,14 @@
 
                 <div class="form-group">
                     <label class="form-label" for="usymbol">Unit symbol *</label>
-                    <input type="text" id="usymbol" name="symbol" class="form-control" placeholder="e.g.: g, Kg, L, etc." required autofocus>
+                    <input type="text" 
+                           id="usymbol" 
+                           name="symbol" 
+                           class="form-control" 
+                           placeholder="e.g.: g, Kg, L, etc." 
+                           value="{{ oldValue.symbol }}"
+                           required 
+                           autofocus>
                     {% if form.symbol.errors %}
                         <span style="font-size: 11px; color: #A32D2D;">{{ form.symbol.errors.0 }}</span>
                     {% endif %}
