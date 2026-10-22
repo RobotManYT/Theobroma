@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from . import models
 from django.core.exceptions import ValidationError
+from django.contrib import messages
 
 # Create your views here.
 def configMain(request):
@@ -26,6 +27,7 @@ def unitConfig(request):
 def unitCreation(request):
     genForm = True
     oldValue = None
+    error_msg = None
 
     try:
         if request.method == "POST":
@@ -61,7 +63,10 @@ def unitCreation(request):
             print(unit_creation)
 
             unit_creation.save()
-    except ValueError:
+            messages.success(request, "Item created successfully")
+    except (ValueError, ValidationError):
+        messages.error(request, "Invalid form")
+        error_msg = {"type":"error", "msg":"Invalid form - The unit may already exist or a value may be invalid"}
         oldValue = request.POST
         
 
@@ -81,6 +86,7 @@ def unitCreation(request):
     return render(request, "unit/form.html", {
         "type_list": type_list,
         "unit_list": unit_list,
+        "alert":error_msg,
         "oldValue": oldValue,
         "redirect_url": request.META.get("HTTP_REFERER"),
     })
