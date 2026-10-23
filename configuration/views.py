@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from . import models
 from django.core.exceptions import ValidationError
 from django.contrib import messages
@@ -17,7 +17,12 @@ def unitConfig(request):
     for unit in units:
         ratio = int(unit.ratio_to_base) if unit.ratio_to_base.is_integer() else unit.ratio_to_base
         ratio_str = f"{ratio} {unit.base_unit.symbol}" if unit.base_unit != None else "Base unit"
-        rows.append([unit.name, unit.symbol, ratio_str, unit.unit_type.name])
+        rows.append({"meta": {"id": unit.id},
+                     "values": {
+                        "name": unit.name, 
+                        "symbol": unit.symbol, 
+                        "ratio": ratio_str, 
+                        "type": unit.unit_type.name}})
 
     print("Rows generated:", rows)
 
@@ -28,6 +33,7 @@ def unitCreation(request):
     genForm = True
     oldValue = None
     error_msg = None
+    redirect_url = None
 
     try:
         if request.method == "POST":
@@ -83,12 +89,66 @@ def unitCreation(request):
     for unit in units:
         unit_list.append({'id': unit.id, 'name': unit.name, 'symbol': unit.symbol})
 
+    if request.method == "POST":
+        redirect_url = request.POST.get("redirect_url", "/")
+    else:
+        redirect_url = request.META.get("HTTP_REFERER", "/")
+
     return render(request, "unit/form.html", {
         "type_list": type_list,
         "unit_list": unit_list,
         "alert":error_msg,
         "oldValue": oldValue,
-        "redirect_url": request.META.get("HTTP_REFERER"),
+        "redirect_url": redirect_url,
+    })
+
+def unitModify(request, unit_id):
+    unit = get_object_or_404(models.Unit, pk=unit_id)
+
+    if request.method == "POST":
+        unit.name = request.POST.get("name")
+        unit.symbol = request.POST.get("symbol")
+        unit.unit_type_id = request.POST.get("utype")
+        unit.base_unit_id = request.POST.get("unit") or None
+
+        try:
+            unit.ratio_to_base = float(request.POST.get("ratio"))
+
+            if unit.base_unit_id is None:
+                unit.ratio_to_base = 1
+            elif unit.ratio_to_base <= 0:
+                raise ValueError
+
+            unit.full_clean()
+            unit.save()
+
+            messages.success(request, "Unit updated successfully")
+            return redirect("unit_config")
+
+        except (ValueError, ValidationError):
+            messages.error(request, "Invalid form")
+
+    utypes = models.UnitType.objects.all()
+    units = models.Unit.objects.exclude(pk=unit.pk)
+
+    return render(request, "unit/form.html", {
+        "type_list": [
+            {"id": utype.id, "name": utype.name}
+            for utype in utypes
+        ],
+        "unit_list": [
+            {"id": other.id, "name": other.name, "symbol": other.symbol}
+            for other in units
+        ],
+        "oldValue": {
+            "name": unit.name,
+            "symbol": unit.symbol,
+            "utype": unit.unit_type.name,
+            "unit": unit.base_unit.name if unit.base_unit else "",
+            "ratio": unit.ratio_to_base,
+        },
+        "editing": True,
+        "unit_id": unit.id,
     })
 
 def categoryConfig(request):

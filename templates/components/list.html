@@ -11,13 +11,14 @@
         <tbody>
             {% for row in rows %}
             <tr>
-                {% for cell in row %}
-                <td>{{ cell }}</td>
+                {% for value in row.values.values %}
+                <td>{{ value }}</td>
                 {% endfor %}
 
                 <td>
                     <div class="flex gap-8">
-                        <a class="btn btn-secondary btn-sm">Modifier</a>
+                        <a class="btn btn-secondary btn-sm"
+                        href="{{ request.path }}modify/{{ row.meta.id }}/">Modifier</a>
                         <button 
                         hx-target="closest tr"
                         hx-swap="outerHTML"

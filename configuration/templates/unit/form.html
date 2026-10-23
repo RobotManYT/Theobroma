@@ -87,10 +87,10 @@
         </div>
 
         <input type="hidden" name="req_path" value="{{ request.path }}">
+        <input type="hidden" name="redirect_url" value="{{ redirect_url }}">
 
         <div class="form-actions" style="border: none; padding-top: 0;">
-            <a href="{{ redirect_url }}" class="btn btn-secondary" 
-               onclick="return confirm('Are you sure you want to disregard entered values?')">
+            <a href="{{ redirect_url }}" class="btn btn-secondary">
                 Cancel
             </a>
             <button type="submit" class="btn btn-primary">Create</button>
