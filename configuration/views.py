@@ -1,7 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from . import models
+from django.shortcuts import get_object_or_404
+from django.http import HttpResponse
+from django.views.decorators.http import require_POST
 from django.core.exceptions import ValidationError
 from django.contrib import messages
+from . import models
 
 # Create your views here.
 def configMain(request):
@@ -17,7 +20,9 @@ def unitConfig(request):
     for unit in units:
         ratio = int(unit.ratio_to_base) if unit.ratio_to_base.is_integer() else unit.ratio_to_base
         ratio_str = f"{ratio} {unit.base_unit.symbol}" if unit.base_unit != None else "Base unit"
-        rows.append({"meta": {"id": unit.id},
+        rows.append({"meta": {
+                        "id": unit.id,
+                        "delete_url": },
                      "values": {
                         "name": unit.name, 
                         "symbol": unit.symbol, 
@@ -130,6 +135,7 @@ def unitModify(request, unit_id):
 
     utypes = models.UnitType.objects.all()
     units = models.Unit.objects.exclude(pk=unit.pk)
+    print(f"oldvalue utype: {unit.unit_type_id}, base_unit: {unit.base_unit_id}, ratio: {unit.ratio_to_base}")
 
     return render(request, "unit/form.html", {
         "type_list": [
@@ -143,13 +149,21 @@ def unitModify(request, unit_id):
         "oldValue": {
             "name": unit.name,
             "symbol": unit.symbol,
-            "utype": unit.unit_type.name,
-            "unit": unit.base_unit.name if unit.base_unit else "",
+            "utype": unit.unit_type_id,
+            "unit": unit.base_unit_id if unit.base_unit else "",
             "ratio": unit.ratio_to_base,
         },
         "editing": True,
         "unit_id": unit.id,
+        "redirect_url": request.META.get("HTTP_REFERER", "/"),
     })
+
+@require_POST
+def unit_delete(request, unit_id):
+    unit = get_object_or_404(models.Unit, pk=unit_id)
+    unit.delete()
+    messages.success(request, "Unit deleted successfully")
+    return HttpResponse("")
 
 def categoryConfig(request):
     return render(request, "category/category.html")

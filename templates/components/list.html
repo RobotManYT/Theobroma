@@ -19,11 +19,21 @@
                     <div class="flex gap-8">
                         <a class="btn btn-secondary btn-sm"
                         href="{{ request.path }}modify/{{ row.meta.id }}/">Modifier</a>
-                        <button 
-                        hx-target="closest tr"
-                        hx-swap="outerHTML"
-                        class="btn btn-danger btn-sm"
-                        >Suppr.</button>
+                        <form method="post"
+                              action="{{ row.delete_url}}"
+                              hx-post="{{ row.delete_url}}"
+                              hx_target="closest tr"
+                              hx-swap="outerHTML"
+                              hx-confirm="Are you sure you want to delete this item?">
+                        
+                              {% csrf_token %}
+                              <button 
+                              type="submit"
+                              hx-target="closest tr"
+                              hx-swap="outerHTML"
+                              class="btn btn-danger btn-sm"
+                              >Suppr.</button>
+                        </form>
                     </div>
                 </td>
             </tr>

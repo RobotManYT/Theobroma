@@ -45,7 +45,7 @@
                         <option value="" disabled selected hidden>Select...</option>
                         {% for utype in type_list %}
                             <option value="{{ utype.id }}"
-                                {% if oldValue.utype == utype.id|stringformat:"s" %}
+                                {% if oldValue.utype == utype.id %}
                                     selected
                                 {% endif %}>{{ utype.name }}</option>
                         {% endfor %}
@@ -63,7 +63,7 @@
                         <option value="" selected>None</option>
                         {% for unit in unit_list %}
                             <option id="id_refUnit_{{ unit.id }}" value="{{ unit.id }}" data-name="{{ unit.name }}" data-symbol="{{ unit.symbol }}"
-                                {% if oldValue.unit == unit.id|stringformat:"s" %}
+                                {% if oldValue.unit == unit.id %}
                                     selected
                                 {% endif %}>{{ unit.name }} ({{ unit.symbol }})</option>
                         {% endfor %}
