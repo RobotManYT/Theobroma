@@ -22,7 +22,7 @@ def unitConfig(request):
         ratio_str = f"{ratio} {unit.base_unit.symbol}" if unit.base_unit != None else "Base unit"
         rows.append({"meta": {
                         "id": unit.id,
-                        "delete_url": },
+                        "delete_url": f'delete/{unit.id}/'},
                      "values": {
                         "name": unit.name, 
                         "symbol": unit.symbol, 
@@ -160,10 +160,29 @@ def unitModify(request, unit_id):
 
 @require_POST
 def unit_delete(request, unit_id):
-    unit = get_object_or_404(models.Unit, pk=unit_id)
+    try:
+        unit = get_object_or_404(models.Unit, pk=unit_id)
+    except models.Unit.DoesNotExist:
+        messages.error(request, "Unit not found")
+        return HttpResponse(status=404,
+                            headers={"HX-Refresh": "true"})
+
+    # Ensure to not break link with child units
+    if models.Unit.objects.filter(base_unit=unit).exists():
+        messages.error(
+            request,
+            f"Cannot delete {unit.name}: Used as a reference unit."
+        )
+        return HttpResponse(status=409,
+                            headers={"HX-Refresh": "true"})
+    
     unit.delete()
     messages.success(request, "Unit deleted successfully")
-    return HttpResponse("")
+
+    return HttpResponse(
+        status=200,
+        headers={"HX-Refresh": "true"}
+    )
 
 def categoryConfig(request):
     return render(request, "category/category.html")
