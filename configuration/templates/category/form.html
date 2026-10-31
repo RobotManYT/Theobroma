@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block section %}Settings - Food category{% endblock %}
+
+{% block page_title %}Settings - Food category{% endblock %}
+
+{% block content %}
+
+<div style="max-width: 760px;">
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="form-card">
+            <div class="form-card-title">New Food Category Creation</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label" for="uname">Category name *</label>
+                    <input type="text"
+                           id="uname"
+                           name="name"
+                           class="form-control"
+                           placeholder="e.g.: Flour, Sugar, etc."
+                           value="{{ oldValue.name }}"
+                           required
+                           autofocus>
+                    {% if form.name.errors %}
+                        <span style="font-size: 11px; color: #A32D2D;">{{ form.name.errors.0 }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="form-card">
+            <div class="form-card-title">Category parameters</div>
+
+            <div id="id_parameters">
+                {% for param in attribute_list %}
+                    <div class="form-grid parameter-row">
+                        <div class="form-group">
+                            <label class="form-label">Parameter name *</label>
+                            <input type="text"
+                                   name="param_name"
+                                   class="form-control"
+                                   placeholder="e.g.: Protein"
+                                   value="{{ param.name }}"
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Data type *</label>
+                            <select name="param_type" class="form-control" required>
+                                {% for value, label in data_type_choices %}
+                                    <option value="{{ value }}"
+                                        {% if param.data_type == value %}selected{% endif %}>
+                                        {{ label }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group" style="display:flex; align-items:end;">
+                            <button type="button" class="btn btn-secondary remove-param">
+                                Remove
+                            </button>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <button type="button" id="id_add_param" class="btn btn-secondary">
+                + Add parameter
+            </button>
+        </div>
+
+        <input type="hidden" name="req_path" value="{{ request.path }}">
+        <input type="hidden" name="redirect_url" value="{{ redirect_url }}">
+
+        <div class="form-actions" style="border: none; padding-top: 0;">
+            <a href="{{ redirect_url }}" class="btn btn-secondary">
+                Cancel
+            </a>
+            <button type="submit" class="btn btn-primary">Create</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    const parameters = document.getElementById("id_parameters");
+    const add_param = document.getElementById("id_add_param");
+
+    const data_types = [
+        {% for value, label in data_type_choices %}
+            { value: "{{ value }}", label: "{{ label }}" },
+        {% endfor %}
+    ];
+
+    function addParameter() {
+        const row = document.createElement("div");
+        row.className = "form-grid parameter-row";
+
+        let options = data_types.map(type =>
+            `<option value="${type.value}">${type.label}</option>`
+        ).join("");
+
+        row.innerHTML = `
+            <div class="form-group">
+                <label class="form-label">Parameter name *</label>
+                <input type="text"
+                       name="param_name"
+                       class="form-control"
+                       placeholder="e.g.: Protein"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Data type *</label>
+                <select name="param_type" class="form-control" required>
+                    ${options}
+                </select>
+            </div>
+
+            <div class="form-group" style="display:flex; align-items:end;">
+                <button type="button" class="btn btn-secondary remove-param">
+                    Remove
+                </button>
+            </div>
+        `;
+
+        parameters.appendChild(row);
+    }
+
+    add_param.addEventListener("click", addParameter);
+
+    parameters.addEventListener("click", function(event) {
+        if (event.target.classList.contains("remove-param")) {
+            event.target.closest(".parameter-row").remove();
+        }
+    });
+</script>
+
+{% endblock %}

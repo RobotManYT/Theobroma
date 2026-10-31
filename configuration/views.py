@@ -10,7 +10,9 @@ from . import models
 def configMain(request):
     return render(request, "main/settings.html")
 
-def unitConfig(request):
+
+## Unit views
+def unitMain(request):
     units = models.Unit.objects.all()
 
     headers = ["Name", "Symbol", "Ratio", "Type"]
@@ -184,5 +186,43 @@ def unit_delete(request, unit_id):
         headers={"HX-Refresh": "true"}
     )
 
-def categoryConfig(request):
-    return render(request, "category/category.html")
+
+## Category views
+def categoryMain(request):
+    categories = models.FoodCategory.objects.all()
+
+    headers = ["Name", "Parameters"]
+
+    rows = []
+
+    for category in categories:
+        params = ""
+
+        for attribute in category.attributes.all():
+            params = params + f"{attribute.name},\n"
+        if params == "":
+            params = "No parameters"
+
+        rows.append({"meta": {
+                        "id": category.id,
+                        "delete_url": f'delete/{category.id}/'},
+                     "values": {
+                        "name": category.name,
+                        "parameters": params}})
+
+    print("Rows generated:", rows)
+
+    return render(request, "category/category.html", {"headers": headers,
+                                                      "rows": rows})
+
+def categoryCreation(request):
+    if request.method == "POST":
+        redirect_url = request.POST.get("redirect_url", "/")
+    else:
+        redirect_url = request.META.get("HTTP_REFERER", "/")
+    return render(request, "category/form.html", {
+        "data
+        "redirect_url": redirect_url,
+    })
+
+

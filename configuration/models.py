@@ -24,4 +24,42 @@ class Unit(models.Model):
         ]
 
     def __str__(self):
-        return f"Unit creation - NAME: {self.name}; SYMBOL: {self.symbol}; UNIT_TYPE: {self.unit_type}; BASE_UNIT: {self.base_unit}; RATIO_TO_BASE: {self.ratio_to_base}"
+        return f"Unit - NAME: {self.name}; SYMBOL: {self.symbol}; UNIT_TYPE: {self.unit_type}; BASE_UNIT: {self.base_unit}; RATIO_TO_BASE: {self.ratio_to_base}"
+
+
+
+class FoodCategory(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                Lower("name"),
+                name="unique_category_name_case_insensitive",
+            ),
+        ]
+
+    def __str__(self):
+        return f"Food category - NAME: {self.name}"
+
+class CategoryAttribute(models.Model):
+    class DataType(models.TextChoices):
+        STRING = "str", "String"
+        INTEGER = "int", "Integer"
+        DECIMAL = "dec", "Decimal"
+        BOOLEAN = "bool", "Boolean"
+        # CUSTOM - Eventually, if needed
+
+    name = models.CharField(max_length=50)
+
+    category = models.ForeignKey(
+        FoodCategory,
+        on_delete=models.CASCADE,
+        related_name="attributes"
+    )
+
+    data_type = models.CharField(
+        max_length=5,
+        choices=DataType.choices,
+        default=DataType.STRING
+    )

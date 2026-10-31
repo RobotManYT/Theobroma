@@ -1,7 +1,11 @@
 {% extends "base.html" %}
 
+{% block section %}Settings - Food category{% endblock %}
+
+{% block page_title %}Settings - Food category{% endblock %}
+
 {% block topbar_right %}
-    <a href="{% url 'configuration:unit_create' %}" class="btn btn-primary">
+    <a href="{% url 'configuration:category_create' %}" class="btn btn-primary">
         <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
             <path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
         </svg>
