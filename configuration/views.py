@@ -221,10 +221,17 @@ def categoryCreation(request):
         param_names = request.POST.getlist("param_name")
         param_types = request.POST.getlist("param_type")
 
+        if len(param_names) != len(param_types):
+            # Place holder, should be properly handle
+            raise ValueError
+
         category = models.FoodCategory(name=name)
+        category.full_clean()
+        category.save()
+
         for eachparam in zip(param_names, param_types):
-            #category.attributes.create(name=eachparam[0], data_type=eachparam[1])
-            print(f"Created attribute: name={eachparam[0]}, type={eachparam[1]}")
+            category.attributes.create(name=eachparam[0], data_type=eachparam[1])
+
 
         print(f"Received category creation request: name={name}, \n\rparam_names={param_names}, \n\rparam_types={param_types}")
 
