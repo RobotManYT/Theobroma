@@ -217,11 +217,26 @@ def categoryMain(request):
 
 def categoryCreation(request):
     if request.method == "POST":
+        name = request.POST.get("name")
+        param_names = request.POST.getlist("param_name")
+        param_types = request.POST.getlist("param_type")
+
+        category = models.FoodCategory(name=name)
+        for eachparam in zip(param_names, param_types):
+            #category.attributes.create(name=eachparam[0], data_type=eachparam[1])
+            print(f"Created attribute: name={eachparam[0]}, type={eachparam[1]}")
+
+        print(f"Received category creation request: name={name}, \n\rparam_names={param_names}, \n\rparam_types={param_types}")
+
+    if request.method == "POST":
         redirect_url = request.POST.get("redirect_url", "/")
     else:
         redirect_url = request.META.get("HTTP_REFERER", "/")
+
     return render(request, "category/form.html", {
-        "data
+        "data_type_choices" : {'1': "int", '2': "str", '3': "dec", '4': "bool"},
+        #"data_type_choices" : [['1', "int"], ['2', "str"], ['3', "dec"], ['4', "bool"]],
+        "oldValue" : None,
         "redirect_url": redirect_url,
     })
 

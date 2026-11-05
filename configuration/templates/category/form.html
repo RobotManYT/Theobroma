@@ -49,7 +49,7 @@
                         <div class="form-group">
                             <label class="form-label">Data type *</label>
                             <select name="param_type" class="form-control" required>
-                                {% for value, label in data_type_choices %}
+                                {% for value, label in data_type_choices.items %}
                                     <option value="{{ value }}"
                                         {% if param.data_type == value %}selected{% endif %}>
                                         {{ label }}
@@ -89,7 +89,7 @@
     const add_param = document.getElementById("id_add_param");
 
     const data_types = [
-        {% for value, label in data_type_choices %}
+        {% for value, label in data_type_choices.items %}
             { value: "{{ value }}", label: "{{ label }}" },
         {% endfor %}
     ];
